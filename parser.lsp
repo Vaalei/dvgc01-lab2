@@ -242,7 +242,6 @@
     (format t "*** Semantic error: found ~8S expected EOF.~%"
           (lexeme state))
     (setf (pstate-status state) 'NOTOK)
-    ;; *** TO BE DONE - completed! ***
 )
 
 ;;=====================================================================
