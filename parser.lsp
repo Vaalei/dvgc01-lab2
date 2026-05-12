@@ -12,7 +12,7 @@
 
 (defun ctos (c)        (make-string 1 :initial-element c))
 (defun str-con (str c) (concatenate 'string str (ctos c)))
-(defun whitespace (c)  (member c '(#\Space #\Tab #\Newline)))
+(defun whitespace (c)  (member c '(#\Space #\Tab #\Newline #\Return)))
 
 ;;=====================================================================
 ;; get-wspace   remove whitespace
@@ -93,8 +93,8 @@
    (list (cond
    
          ((string=   lexeme "program")  'PROGRAM )
-         ((string=   lexeme "input"  )  'INPUT   )
-         ((string=   lexeme "output" )  'OUTPUT  )
+;         ((string=   lexeme "input"  )  'INPUT   )
+;         ((string=   lexeme "output" )  'OUTPUT  )
          ((string=   lexeme "var"    )  'VAR     )
          ((string=   lexeme "integer")  'INTEGER )
          ((string=   lexeme "real"   )  'REAL    )
@@ -102,7 +102,7 @@
          ((string=   lexeme "begin"  )  'BEGIN   )
          ((string=   lexeme "end"    )  'END     )
          ((string=   lexeme ":="     )  'ASSIGN  )
-         ((string=   lexeme ";"      )  'SCOLON  )
+         ((string=   lexeme ";"      )  'SEMICOLON  )
          ((string=   lexeme ":"      )  'COLON   )
          ((string=   lexeme ","      )  'COMMA   )
          ((string=   lexeme "."      )  'DOT     )
@@ -283,7 +283,75 @@
 ; <operand>       --> id | number
 ;;=====================================================================
 
-;; *** TO BE DONE ***
+(defun stat-part (state)
+    (match state 'BEGIN)
+    (stat-list state)
+    (match state 'END)
+    (match state 'DOT)
+)
+
+(defun stat-list (state)
+    (stat state)
+    (if (eq (token state) 'SEMICOLON)
+        (progn 
+            (match state 'SEMICOLON)
+            (stat-list state)
+        )
+    )
+)
+
+(defun stat (state)
+    (assign-stat state)
+)
+
+(defun assign-stat (state)
+    (match state 'ID)
+    (match state 'ASSIGN)
+    (expr state)
+)
+
+(defun expr (state)
+    (term state)
+    (if (eq (token state) 'PLUS)
+        (progn
+            (match state 'PLUS)
+            (expr state)
+        )
+    )
+)
+
+(defun term (state)
+    (factor state)
+    (if (eq (token state) 'MULT)
+        (progn
+            (match state 'MULT)
+            (term state)
+        )
+    )
+)
+
+(defun factor (state)
+    (if (eq (token state) 'LP)
+        (progn
+            (match state 'LP)
+            (expr state)
+            (match state 'RP)
+        )
+        (operand state)
+    )
+)
+
+(defun operand (state)
+    (cond
+        ((eq (token state) 'ID)
+            (match state 'ID)
+        )
+        ((eq (token state) 'NUM)
+            (match state 'NUM)
+        )
+        (t (synerr3 state))
+    )
+)
 
 ;;=====================================================================
 ; <var-part>     --> var <var-dec-list>
@@ -307,7 +375,7 @@
 (defun var-dec (state)
     (id-list state)
     (match state 'COLON)
-    (type state)
+    (var-type state)
     (match state 'SEMICOLON)
 )
 
@@ -319,7 +387,7 @@
             (id-list state)))
 )
 
-(defun type (state)
+(defun var-type (state)
     (cond
         ((eq (token state) 'INTEGER)
             (match state 'INTEGER)    
@@ -330,7 +398,7 @@
         ((eq (token state) 'REAL)
             (match state 'REAL)    
         )
-        (t synerr2 state)
+        (t (synerr2 state))
     )
 )
 
@@ -341,6 +409,11 @@
 (defun program-header (state)
     (match state 'PROGRAM)
     (match state 'ID)
+    (match state 'LP)
+    (match state 'ID)
+    (match state 'COMMA)
+    (match state 'ID)
+    (match state 'RP)
     (match state 'SEMICOLON)
 )
 
@@ -404,7 +477,7 @@
 ; THE PARSER - test a single file
 ;;=====================================================================
 
-;;(parse "testfiles/testok1.pas")
+(parse "testfiles/testok1.pas")
 
 ;;=====================================================================
 ; THE PARSER - end of code
