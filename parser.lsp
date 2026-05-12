@@ -375,7 +375,7 @@
 (defun var-dec (state)
     (id-list state)
     (match state 'COLON)
-    (type state)
+    (var-type state)
     (match state 'SEMICOLON)
 )
 
@@ -387,7 +387,7 @@
             (id-list state)))
 )
 
-(defun type (state)
+(defun var-type (state)
     (cond
         ((eq (token state) 'INTEGER)
             (match state 'INTEGER)    
@@ -398,7 +398,7 @@
         ((eq (token state) 'REAL)
             (match state 'REAL)    
         )
-        (t synerr2 state)
+        (t (synerr2 state))
     )
 )
 
@@ -409,6 +409,11 @@
 (defun program-header (state)
     (match state 'PROGRAM)
     (match state 'ID)
+    (match state 'LP)
+    (match state 'ID)
+    (match state 'COMMA)
+    (match state 'ID)
+    (match state 'RP)
     (match state 'SEMICOLON)
 )
 
