@@ -279,7 +279,46 @@
 ; <type>         --> integer | real | boolean
 ;;=====================================================================
 
-;; *** TO BE DONE ***
+(defun var-part (state)
+    (match state 'VAR)
+    (var-dec-list state)
+)
+
+(defun var-dec-list (state)
+    (var-dec state)
+    (if (eq (token state) 'ID)
+        (var-dec-list state))
+)
+
+(defun var-dec (state)
+    (id-list state)
+    (match state 'COLON)
+    (type state)
+    (match state 'SEMICOLON)
+)
+
+(defun id-list (state)
+    (match state 'ID)
+    (if (eq (token state) 'COMMA)
+        (progn
+            (match state 'COMMA)
+            (id-list state)))
+)
+
+(defun type (state)
+    (cond
+        ((eq (token state) 'INTEGER)
+            (match state 'INTEGER)    
+        ) 
+        ((eq (token state) 'BOOLEAN)
+            (match state 'BOOLEAN)    
+        )
+        ((eq (token state) 'REAL)
+            (match state 'REAL)    
+        )
+        (t synerr2 state)
+    )
+)
 
 ;;=====================================================================
 ; <program-header>
