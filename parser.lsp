@@ -477,7 +477,7 @@
 ; THE PARSER - test a single file
 ;;=====================================================================
 
-;;(parse "testfiles/testok1.pas")
+(parse "testfiles/testok1.pas")
 
 ;;=====================================================================
 ; THE PARSER - end of code
