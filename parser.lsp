@@ -447,6 +447,7 @@
    (if (not (eq (token state) 'EOF))
         (progn
             (semerr3 state)
+            (get-token state)
             (check-end state)
         )
    )
