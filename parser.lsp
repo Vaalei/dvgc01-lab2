@@ -93,8 +93,8 @@
    (list (cond
    
          ((string=   lexeme "program")  'PROGRAM )
-         ((string=   lexeme "input"  )  'INPUT   )
-         ((string=   lexeme "output" )  'OUTPUT  )
+;         ((string=   lexeme "input"  )  'INPUT   )
+;         ((string=   lexeme "output" )  'OUTPUT  )
          ((string=   lexeme "var"    )  'VAR     )
          ((string=   lexeme "integer")  'INTEGER )
          ((string=   lexeme "real"   )  'REAL    )
