@@ -93,8 +93,8 @@
    (list (cond
    
          ((string=   lexeme "program")  'PROGRAM )
-;         ((string=   lexeme "input"  )  'INPUT   )
-;         ((string=   lexeme "output" )  'OUTPUT  )
+         ((string=   lexeme "input"  )  'INPUT   )
+         ((string=   lexeme "output" )  'OUTPUT  )
          ((string=   lexeme "var"    )  'VAR     )
          ((string=   lexeme "integer")  'INTEGER )
          ((string=   lexeme "real"   )  'REAL    )
@@ -102,10 +102,10 @@
          ((string=   lexeme "begin"  )  'BEGIN   )
          ((string=   lexeme "end"    )  'END     )
          ((string=   lexeme ":="     )  'ASSIGN  )
-         ((string=   lexeme ";"      )  'SEMICOLON  )
+         ((string=   lexeme ";"      )  'SCOLON  )
          ((string=   lexeme ":"      )  'COLON   )
          ((string=   lexeme ","      )  'COMMA   )
-         ((string=   lexeme "."      )  'DOT     )
+         ((string=   lexeme "."      )  'FSTOP   )
          ((string=   lexeme "+"      )  'PLUS    )
          ((string=   lexeme "*"      )  'MULT    )
          ((string=   lexeme "("      )  'LP      )
@@ -286,14 +286,14 @@
     (match state 'BEGIN)
     (stat-list state)
     (match state 'END)
-    (match state 'DOT)
+    (match state 'FSTOP)
 )
 
 (defun stat-list (state)
     (stat state)
-    (if (eq (token state) 'SEMICOLON)
+    (if (eq (token state) 'SCOLON)
         (progn 
-            (match state 'SEMICOLON)
+            (match state 'SCOLON)
             (stat-list state)
         )
     )
@@ -381,11 +381,19 @@
     (id-list state)
     (match state 'COLON)
     (var-type state)
-    (match state 'SEMICOLON)
+    (match state 'SCOLON)
+)
+
+(defun check-id (state)
+   (if (symtab-member state (lexeme state))
+    (semerr1 state)
+    (symtab-add state (lexeme state))
+   )
+   (match state 'ID)
 )
 
 (defun id-list (state)
-    (match state 'ID)
+    (check-id state)
     (if (eq (token state) 'COMMA)
         (progn
             (match state 'COMMA)
@@ -415,11 +423,11 @@
     (match state 'PROGRAM)
     (match state 'ID)
     (match state 'LP)
-    (match state 'ID)
+    (match state 'INPUT)
     (match state 'COMMA)
-    (match state 'ID)
+    (match state 'OUTPUT)
     (match state 'RP)
-    (match state 'SEMICOLON)
+    (match state 'SCOLON)
 )
 
 ;;=====================================================================
@@ -480,7 +488,7 @@
          )
 
 (defun parse-all ()
-(let ((my-files '("testok1.pas" "testok2.pas" "testerr1.pas")))
+(let ((my-files (directory "testfiles/*.pas")))
    (run-tests my-files))
 )
 
@@ -488,13 +496,13 @@
 ; THE PARSER - test all files
 ;;=====================================================================
 
-;; (parse-all)
+(parse-all)
 
 ;;=====================================================================
 ; THE PARSER - test a single file
 ;;=====================================================================
 
-(parse "testfiles/testok1.pas")
+;; (parse "testfiles/testok1.pas")
 
 ;;=====================================================================
 ; THE PARSER - end of code
