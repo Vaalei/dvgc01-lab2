@@ -242,7 +242,6 @@
     (format t "*** Semantic error: found ~8S expected EOF.~%"
           (lexeme state))
     (setf (pstate-status state) 'NOTOK)
-    ;; *** TO BE DONE - completed! ***
 )
 
 ;;=====================================================================
@@ -305,6 +304,9 @@
 )
 
 (defun assign-stat (state)
+    (if (not (symtab-member state (lexeme state)))
+        (semerr2 state)
+    )
     (match state 'ID)
     (match state 'ASSIGN)
     (expr state)
@@ -344,6 +346,9 @@
 (defun operand (state)
     (cond
         ((eq (token state) 'ID)
+            (if (not (symtab-member state (lexeme state)))
+                (semerr2 state)
+            )
             (match state 'ID)
         )
         ((eq (token state) 'NUM)
