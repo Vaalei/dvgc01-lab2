@@ -431,7 +431,9 @@
 ;;=====================================================================
 
 (defun check-end (state)
-;; *** TO BE DONE ***
+   (if (not (eq (token state) 'EOF))
+       (semerr3 state)
+   )
 )
 
 ;;=====================================================================
@@ -461,10 +463,20 @@
 ; THE PARSER - parse all the test files
 ;;=====================================================================
 
+
+(defun run-tests (file-list)
+   (if (null file-list)
+      (progn
+         (terpri)
+         (princ "Finished all tests."))
+      (progn
+         (parse (first file-list))
+         (run-tests (rest file-list))))
+         )
+
 (defun parse-all ()
-
-;; *** TO BE DONE ***
-
+(let ((my-files '("testok1.pas" "testok2.pas" "testerr1.pas")))
+   (run-tests my-files))
 )
 
 ;;=====================================================================
