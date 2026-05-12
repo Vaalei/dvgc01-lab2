@@ -102,7 +102,7 @@
          ((string=   lexeme "begin"  )  'BEGIN   )
          ((string=   lexeme "end"    )  'END     )
          ((string=   lexeme ":="     )  'ASSIGN  )
-         ((string=   lexeme ";"      )  'SCOLON  )
+         ((string=   lexeme ";"      )  'SEMICOLON  )
          ((string=   lexeme ":"      )  'COLON   )
          ((string=   lexeme ","      )  'COMMA   )
          ((string=   lexeme "."      )  'DOT     )
