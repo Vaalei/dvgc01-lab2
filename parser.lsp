@@ -91,12 +91,26 @@
 (defun map-lexeme (lexeme)
 (format t "Symbol: ~S ~%" lexeme)
    (list (cond
+   
          ((string=   lexeme "program")  'PROGRAM )
+         ((string=   lexeme "input"  )  'INPUT   )
+         ((string=   lexeme "output" )  'OUTPUT  )
          ((string=   lexeme "var"    )  'VAR     )
-
-;; etc,  *** TO BE DONE ***
-
-         ((string=   lexeme ""       )	'EOF     )
+         ((string=   lexeme "integer")  'INTEGER )
+         ((string=   lexeme "real"   )  'REAL    )
+         ((string=   lexeme "boolean")  'BOOLEAN )
+         ((string=   lexeme "begin"  )  'BEGIN   )
+         ((string=   lexeme "end"    )  'END     )
+         ((string=   lexeme ":="     )  'ASSIGN  )
+         ((string=   lexeme ";"      )  'SCOLON  )
+         ((string=   lexeme ":"      )  'COLON   )
+         ((string=   lexeme ","      )  'COMMA   )
+         ((string=   lexeme "."      )  'DOT     )
+         ((string=   lexeme "+"      )  'PLUS    )
+         ((string=   lexeme "*"      )  'MULT    )
+         ((string=   lexeme "("      )  'LP      )
+         ((string=   lexeme ")"      )  'RP      )
+         ((string=   lexeme ""       )	 'EOF     )
          ((is-id     lexeme          )  'ID      )
          ((is-number lexeme          )  'NUM     )
          (t                             'UNKNOWN )
@@ -162,9 +176,11 @@
 ; lexeme - returns the lexeme from (token lexeme)(reader)
 ;;=====================================================================
 
-(defun token  (state) ;; *** TO BE DONE ***
+(defun token  (state) 
+   (first (pstate-lookahead state))
 )
-(defun lexeme (state) ;; *** TO BE DONE ***
+(defun lexeme (state)
+   (second (pstate-lookahead state))
 )
 
 ;;=====================================================================
