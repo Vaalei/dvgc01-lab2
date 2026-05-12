@@ -123,11 +123,14 @@
 ;;=====================================================================
 
 (defun is-id (str)
-;; *** TO BE DONE ***
+    (and (> (length str) 0)
+         (alpha-char-p (char str 0))
+         (every #'alphanumericp str))
 )
 
 (defun is-number (str)
-;; *** TO BE DONE ***
+    (and (> (length str) 0)
+         (every #'digit-char-p str))
 )
 
 ;;=====================================================================
@@ -176,11 +179,11 @@
 ; lexeme - returns the lexeme from (token lexeme)(reader)
 ;;=====================================================================
 
-(defun token  (state) 
-   (first (pstate-lookahead state))
+(defun token  (state)
+    (first (pstate-lookahead state))
 )
 (defun lexeme (state)
-   (second (pstate-lookahead state))
+    (second (pstate-lookahead state))
 )
 
 ;;=====================================================================
@@ -290,13 +293,56 @@
 ; <type>         --> integer | real | boolean
 ;;=====================================================================
 
-;; *** TO BE DONE ***
+(defun var-part (state)
+    (match state 'VAR)
+    (var-dec-list state)
+)
+
+(defun var-dec-list (state)
+    (var-dec state)
+    (if (eq (token state) 'ID)
+        (var-dec-list state))
+)
+
+(defun var-dec (state)
+    (id-list state)
+    (match state 'COLON)
+    (type state)
+    (match state 'SEMICOLON)
+)
+
+(defun id-list (state)
+    (match state 'ID)
+    (if (eq (token state) 'COMMA)
+        (progn
+            (match state 'COMMA)
+            (id-list state)))
+)
+
+(defun type (state)
+    (cond
+        ((eq (token state) 'INTEGER)
+            (match state 'INTEGER)    
+        ) 
+        ((eq (token state) 'BOOLEAN)
+            (match state 'BOOLEAN)    
+        )
+        ((eq (token state) 'REAL)
+            (match state 'REAL)    
+        )
+        (t synerr2 state)
+    )
+)
 
 ;;=====================================================================
 ; <program-header>
 ;;=====================================================================
 
-;; *** TO BE DONE ***
+(defun program-header (state)
+    (match state 'PROGRAM)
+    (match state 'ID)
+    (match state 'SEMICOLON)
+)
 
 ;;=====================================================================
 ; <program> --> <program-header><var-part><stat-part>
