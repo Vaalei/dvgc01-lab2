@@ -304,6 +304,9 @@
 )
 
 (defun assign-stat (state)
+    (if (not (symtab-member state (lexeme state)))
+        (semerr2 state)
+    )
     (match state 'ID)
     (match state 'ASSIGN)
     (expr state)
@@ -343,6 +346,9 @@
 (defun operand (state)
     (cond
         ((eq (token state) 'ID)
+            (if (not (symtab-member state (lexeme state)))
+                (semerr2 state)
+            )
             (match state 'ID)
         )
         ((eq (token state) 'NUM)
