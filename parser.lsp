@@ -269,7 +269,75 @@
 ; <operand>       --> id | number
 ;;=====================================================================
 
-;; *** TO BE DONE ***
+(defun stat-part (state)
+    (match state 'BEGIN)
+    (stat-list state)
+    (match state 'END)
+    (match state 'DOT)
+)
+
+(defun stat-list (state)
+    (stat state)
+    (if (eq (token state) 'SEMICOLON)
+        (progn 
+            (match state 'SEMICOLON)
+            (stat-list state)
+        )
+    )
+)
+
+(defun stat (state)
+    (assign-stat state)
+)
+
+(defun assign-stat (state)
+    (match state 'ID)
+    (match state 'ASSIGN)
+    (expr state)
+)
+
+(defun expr (state)
+    (term state)
+    (if (eq (token state) 'PLUS)
+        (progn
+            (match state 'PLUS)
+            (expr state)
+        )
+    )
+)
+
+(defun term (state)
+    (factor state)
+    (if (eq (token state) 'MULT)
+        (progn
+            (match state 'MULT)
+            (term state)
+        )
+    )
+)
+
+(defun factor (state)
+    (if (eq (token state) 'LP)
+        (progn
+            (match state 'LP)
+            (expr state)
+            (match state 'RP)
+        )
+        (operand state)
+    )
+)
+
+(defun operand (state)
+    (cond
+        ((eq (token state) 'ID)
+            (match state 'ID)
+        )
+        ((eq (token state) 'NUM)
+            (match state 'NUM)
+        )
+        (t (synerr3 state))
+    )
+)
 
 ;;=====================================================================
 ; <var-part>     --> var <var-dec-list>
