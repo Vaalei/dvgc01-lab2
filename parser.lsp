@@ -12,7 +12,7 @@
 
 (defun ctos (c)        (make-string 1 :initial-element c))
 (defun str-con (str c) (concatenate 'string str (ctos c)))
-(defun whitespace (c)  (member c '(#\Space #\Tab #\Newline)))
+(defun whitespace (c)  (member c '(#\Space #\Tab #\Newline #\Return)))
 
 ;;=====================================================================
 ;; get-wspace   remove whitespace
