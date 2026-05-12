@@ -445,7 +445,10 @@
 
 (defun check-end (state)
    (if (not (eq (token state) 'EOF))
-       (semerr3 state)
+        (progn
+            (semerr3 state)
+            (check-end state)
+        )
    )
 )
 
