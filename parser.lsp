@@ -109,11 +109,14 @@
 ;;=====================================================================
 
 (defun is-id (str)
-;; *** TO BE DONE ***
+    (and (> (length str) 0)
+         (alpha-char-p (char str 0))
+         (every #'alphanumericp str))
 )
 
 (defun is-number (str)
-;; *** TO BE DONE ***
+    (and (> (length str) 0)
+         (every #'digit-char-p str))
 )
 
 ;;=====================================================================
