@@ -191,7 +191,7 @@
 ;;=====================================================================
 
 (defun symtab-add (state id)
- (setf (pstate-symtab state) (cons id (pstate-symtab state)))
+ (setf (pstate-symtab state) (append (pstate-symtab state) (list id)))
 )
 
 (defun symtab-member (state id)
