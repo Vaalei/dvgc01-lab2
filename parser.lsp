@@ -485,24 +485,38 @@
 ; THE PARSER - parse all the test files
 ;;=====================================================================
 
+(defun relative-path (f)
+    (let ((name (namestring f)))
+        (subseq name (search "testfiles/" name))))
 
 (defun run-tests (file-list)
    (if (null file-list)
       (progn
          (terpri)
-         (princ "Finished all tests."))
+         (princ "Bye."))
       (progn
-         (parse (first file-list))
+         (parse (relative-path (first file-list)))
          (run-tests (rest file-list))))
          )
 
 (defun parse-all ()
-(let ((my-files (directory "testfiles/*.pas")))
-   (run-tests my-files))
+    (let ((my-files (append
+        (sort (remove-if (lambda (f)
+                (let ((name (namestring f)))
+                    (or (search "testok" name)
+                        (search "notok" name))))
+              (directory "testfiles/test*.pas"))#'string< :key #'namestring)
+        (sort (directory "testfiles/testok*.pas") #'string< :key #'namestring)
+        (sort (directory "testfiles/fun*.pas")    #'string< :key #'namestring)
+        (sort (directory "testfiles/sem*.pas")    #'string< :key #'namestring)
+            )))
+        (run-tests my-files)
+    )
 )
 
 ;;=====================================================================
 ; THE PARSER - test all files
+
 ;;=====================================================================
 
 (parse-all)
